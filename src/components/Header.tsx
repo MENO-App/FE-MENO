@@ -1,13 +1,27 @@
-import { UtensilsCrossed, Bell, User } from 'lucide-react';
+import { UtensilsCrossed, Bell, User, LayoutDashboard, CalendarDays } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { mockUser } from '@/data/mockData';
+import { Link, useLocation } from 'react-router-dom';
+import { cn } from '@/lib/utils';
 
-export const Header = () => {
-  const initials = mockUser.displayName
+interface HeaderProps {
+  userName?: string;
+  userClass?: string;
+  userRole?: 'STUDENT' | 'KITCHEN' | 'ADMIN';
+}
+
+export const Header = ({ 
+  userName = 'Emma Johnson', 
+  userClass = '5B',
+  userRole = 'STUDENT'
+}: HeaderProps) => {
+  const location = useLocation();
+  const initials = userName
     .split(' ')
     .map((n) => n[0])
     .join('');
+
+  const isAdmin = userRole === 'KITCHEN' || userRole === 'ADMIN';
 
   return (
     <header className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-sm">
@@ -22,6 +36,36 @@ export const Header = () => {
           </div>
         </div>
 
+        {/* Navigation */}
+        <nav className="hidden items-center gap-1 rounded-xl bg-muted p-1 sm:flex">
+          <Link to="/">
+            <Button
+              variant="ghost"
+              size="sm"
+              className={cn(
+                'gap-2 rounded-lg',
+                location.pathname === '/' && 'bg-background shadow-sm'
+              )}
+            >
+              <CalendarDays className="h-4 w-4" />
+              Meal Plan
+            </Button>
+          </Link>
+          <Link to="/dashboard">
+            <Button
+              variant="ghost"
+              size="sm"
+              className={cn(
+                'gap-2 rounded-lg',
+                location.pathname === '/dashboard' && 'bg-background shadow-sm'
+              )}
+            >
+              <LayoutDashboard className="h-4 w-4" />
+              Dashboard
+            </Button>
+          </Link>
+        </nav>
+
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="icon" className="relative">
             <Bell className="h-5 w-5" />
@@ -35,12 +79,44 @@ export const Header = () => {
               </AvatarFallback>
             </Avatar>
             <div className="hidden pr-2 sm:block">
-              <p className="text-sm font-semibold leading-tight">{mockUser.displayName}</p>
-              <p className="text-xs text-muted-foreground">Class {mockUser.classGroup}</p>
+              <p className="text-sm font-semibold leading-tight">{userName}</p>
+              <p className="text-xs text-muted-foreground">
+                {userRole === 'KITCHEN' ? 'Kitchen Staff' : userRole === 'ADMIN' ? 'Admin' : `Class ${userClass}`}
+              </p>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Mobile navigation */}
+      <nav className="flex items-center justify-center gap-1 border-t bg-muted/50 p-2 sm:hidden">
+        <Link to="/" className="flex-1">
+          <Button
+            variant="ghost"
+            size="sm"
+            className={cn(
+              'w-full gap-2 rounded-lg',
+              location.pathname === '/' && 'bg-background shadow-sm'
+            )}
+          >
+            <CalendarDays className="h-4 w-4" />
+            Meal Plan
+          </Button>
+        </Link>
+        <Link to="/dashboard" className="flex-1">
+          <Button
+            variant="ghost"
+            size="sm"
+            className={cn(
+              'w-full gap-2 rounded-lg',
+              location.pathname === '/dashboard' && 'bg-background shadow-sm'
+            )}
+          >
+            <LayoutDashboard className="h-4 w-4" />
+            Dashboard
+          </Button>
+        </Link>
+      </nav>
     </header>
   );
 };
