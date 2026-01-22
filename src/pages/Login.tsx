@@ -1,78 +1,94 @@
-import { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '@/auth/useAuth';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { AlertCircle, Loader2 } from 'lucide-react';
+import { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "@/auth/useAuth";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { AlertCircle, Loader2 } from "lucide-react";
+
+type LocationState = {
+  from?: {
+    pathname?: string;
+  };
+};
 
 export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
-  const auth = useAuth();
+  const auth = useAuth() as any; // Keep flexible until useAuth is fully typed
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  const state = location.state as LocationState | null;
+
+  // Redirect after successful login
+  useEffect(() => {
+    if (!auth?.accessToken) return;
+
+    // If user was redirected here from a protected route
+    if (state?.from?.pathname) {
+      navigate(state.from.pathname, { replace: true });
+      return;
+    }
+
+    const roles: string[] = auth.roles ?? [];
+
+    // Role-based redirect
+    if (roles.includes("ADMIN")) navigate("/admin", { replace: true });
+    else if (roles.includes("KITCHEN")) navigate("/kitchen", { replace: true });
+    else if (roles.includes("STAFF")) navigate("/staff", { replace: true });
+    else navigate("/student", { replace: true }); // USER default
+  }, [auth?.accessToken, auth?.roles, navigate, state]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setIsLoading(true);
 
     try {
-      // Validera input
       if (!email.trim()) {
-        setError('E-post är obligatorisk');
-        setIsLoading(false);
+        setError("Email is required");
         return;
       }
       if (!password) {
-        setError('Lösenord är obligatoriskt');
-        setIsLoading(false);
+        setError("Password is required");
         return;
       }
 
-      // Anropa login från AuthContext
-      await auth.login(email, password);
+      await auth.login(email.trim(), password);
+      // Redirect is handled by useEffect
+    } catch (err: any) {
+      const message = err?.message ?? "";
 
-      // Vi behöver inte manuellt navigate här - se kommentar nedan
-      // Login sparar roles i auth-state, och vi använder den för att
-      // bestämma redirect i en useEffect eller direkt efter login
-    } catch (err) {
+      if (message === "401") setError("Invalid email or password.");
+      else if (message === "403") setError("You are not authorized.");
+      else setError("Login failed. Please try again.");
+    } finally {
       setIsLoading(false);
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError('Ett oväntat fel uppstod. Försök igen.');
-      }
     }
   };
-
-  // Om redan inloggad -> redirect baserat på roll
-  if (auth.accessToken && !auth.isLoading) {
-    if (auth.isAdmin) {
-      navigate('/admin', { replace: true });
-    } else {
-      navigate('/mealplan', { replace: true });
-    }
-    return null;
-  }
-
-  const from = location.state?.from?.pathname;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center p-4">
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="space-y-2">
-          <CardTitle className="text-2xl font-bold">Logga in</CardTitle>
+          <CardTitle className="text-2xl font-bold">Sign in</CardTitle>
           <CardDescription>
-            Ange dina autentiseringsuppgifter för att komma åt programmet
+            Enter your credentials to access the application
           </CardDescription>
         </CardHeader>
+
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
@@ -83,20 +99,21 @@ export default function Login() {
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="email">E-post</Label>
+              <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="din.email@exempel.se"
+                placeholder="your.email@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={isLoading}
                 autoComplete="email"
+                required
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">Lösenord</Label>
+              <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
                 type="password"
@@ -105,31 +122,21 @@ export default function Login() {
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={isLoading}
                 autoComplete="current-password"
+                required
               />
             </div>
 
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isLoading}
-              size="lg"
-            >
+            <Button type="submit" className="w-full" disabled={isLoading} size="lg">
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Loggar in...
+                  Signing in...
                 </>
               ) : (
-                'Logga in'
+                "Sign in"
               )}
             </Button>
           </form>
-
-          {from && (
-            <p className="text-center text-sm text-muted-foreground mt-4">
-              Du behöver logga in för att komma åt denna sida
-            </p>
-          )}
         </CardContent>
       </Card>
     </div>
