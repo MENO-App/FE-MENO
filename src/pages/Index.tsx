@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/auth/useAuth';
 import { Header } from '@/components/Header';
 import { WeekNavigation } from '@/components/WeekNavigation';
 import { WeekSummary } from '@/components/WeekSummary';
@@ -52,9 +54,24 @@ const Index = () => {
     return { dayNum, mainItem, vegItem };
   });
 
+  const auth = useAuth() as any;
+  const navigate = useNavigate();
+
+  // Handler for logout
+  const handleLogout = () => {
+    auth.logout();
+    navigate('/login', { replace: true });
+  };
+
+
+  // Use email from auth, fallback to auth.user.email
+  const userEmail = auth?.email || auth?.user?.email || undefined;
+  // Use primary role from auth.roles
+  const userRole = Array.isArray(auth?.roles) && auth.roles.length > 0 ? auth.roles[0] : undefined;
+
   return (
     <div className="min-h-screen bg-background">
-      <Header />
+      <Header userName={userEmail} userRole={userRole} />
 
       <main className="container max-w-4xl px-4 py-6">
         {/* Week navigation */}
@@ -104,6 +121,8 @@ const Index = () => {
                 <li>• Check allergen info on each dish</li>
                 <li>• Vegetarian options are marked with 🌿</li>
               </ul>
+              {/* Logga ut button logic only, no styling/UI changes */}
+              <button type="button" onClick={handleLogout} style={{ display: 'none' }}>Logga ut</button>
             </div>
           </div>
         </div>

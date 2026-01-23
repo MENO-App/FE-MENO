@@ -1,10 +1,11 @@
 import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/auth/useAuth";
 
+type Role = "ADMIN" | "KITCHEN" | "STAFF" | "STUDENT";
+
 type Props = {
   children: JSX.Element;
-  // If set, user must have this role (ADMIN always allowed)
-  requireRole?: "ADMIN" | "KITCHEN" | "STAFF" | "USER";
+  requireRole?: Role;
 };
 
 export function ProtectedRoute({ children, requireRole }: Props) {
@@ -19,12 +20,14 @@ export function ProtectedRoute({ children, requireRole }: Props) {
     return <Navigate to="/login" replace state={{ from: location }} />;
   }
 
-  // Logged in but missing required role -> redirect to forbidden
-  if (requireRole) {
-    const hasRequiredRole = roles.includes("ADMIN") || roles.includes(requireRole);
-    if (!hasRequiredRole) {
-      return <Navigate to="/forbidden" replace />;
-    }
+  // ADMIN can access all protected routes
+  if (roles.includes("ADMIN")) {
+    return children;
+  }
+
+  // If requireRole is set and user does not have it, redirect to forbidden
+  if (requireRole && !roles.includes(requireRole)) {
+    return <Navigate to="/forbidden" replace />;
   }
 
   return children;
