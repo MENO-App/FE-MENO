@@ -6,8 +6,10 @@ import Login from "@/pages/Login";
 import ForbiddenPage from "@/pages/ForbiddenPage";
 import NotFound from "@/pages/NotFound";
 
+
 import Dashboard from "@/pages/Dashboard";
 import MealPlan from "@/pages/MealPlan";
+import Index from "@/pages/Index";
 
 import { ProtectedRoute } from "@/auth/ProtectedRoute";
 
@@ -24,7 +26,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/forbidden" element={<ForbiddenPage />} />
 
-            {/* Protected routes */}
+            {/* Protected routes (keep all roles, even if not fully used yet) */}
             <Route
               path="/admin"
               element={
@@ -35,10 +37,28 @@ function App() {
             />
 
             <Route
+              path="/kitchen"
+              element={
+                <ProtectedRoute requireRole="KITCHEN">
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/staff"
+              element={
+                <ProtectedRoute requireRole="STAFF">
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
               path="/student"
               element={
-                <ProtectedRoute requireRole="USER">
-                  <MealPlan />
+                <ProtectedRoute requireRole="STUDENT">
+                  <Index />
                 </ProtectedRoute>
               }
             />

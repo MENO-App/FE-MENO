@@ -44,11 +44,14 @@ export default function Login() {
 
     const roles: string[] = auth.roles ?? [];
 
-    // Role-based redirect
-    if (roles.includes("ADMIN")) navigate("/admin", { replace: true });
-    else if (roles.includes("KITCHEN")) navigate("/kitchen", { replace: true });
-    else if (roles.includes("STAFF")) navigate("/staff", { replace: true });
-    else navigate("/student", { replace: true }); // USER default
+    // Role-based redirect (grouped logic)
+    if (roles.some((role) => ["ADMIN", "KITCHEN", "STAFF"].includes(role))) {
+      navigate("/admin", { replace: true });
+    } else if (roles.includes("STUDENT")) {
+      navigate("/student", { replace: true });
+    } else {
+      // fallback: stay on login or handle as needed
+    }
   }, [auth?.accessToken, auth?.roles, navigate, state]);
 
   const handleSubmit = async (e: React.FormEvent) => {

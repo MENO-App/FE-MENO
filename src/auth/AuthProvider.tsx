@@ -35,9 +35,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   function logout() {
-    logoutApi();
+    // Remove from localStorage
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("roles");
+    localStorage.removeItem("email");
+    localStorage.removeItem("userId");
+    // Clear state
     setAccessToken(null);
     setRoles([]);
+    // If you store email/userId in state, clear them here as well
   }
 
   const value = useMemo(
