@@ -171,6 +171,7 @@ export default function Profile() {
       setSavedCustomNote(customAllergyNote.trim());
       setShowCustomInput(false);
       setPendingCustomAllergyId(null);
+      setCustomAllergyNote(""); // Clear input after save
       toast.success("Allergy added");
     } catch {
       setError("Failed to update. Please try again.");
@@ -423,25 +424,32 @@ export default function Profile() {
                       <div className="flex flex-wrap gap-2 mt-2">
                         {allAllergies
                           .filter((a) => selectedAllergyIds.includes(a.allergyId))
-                          .map((allergy) => (
-                            <button
-                              key={allergy.allergyId}
-                              onClick={() => toggleAllergy(allergy.allergyId)}
-                              disabled={togglingId === allergy.allergyId}
-                              className={cn(
-                                "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-colors",
-                                "bg-destructive/10 text-destructive border border-destructive/20 hover:bg-destructive/20",
-                                togglingId === allergy.allergyId && "opacity-50"
-                              )}
-                            >
-                              {togglingId === allergy.allergyId ? (
-                                <Loader2 className="h-3 w-3 animate-spin" />
-                              ) : (
-                                <X className="h-3 w-3" />
-                              )}
-                              {allergy.name}
-                            </button>
-                          ))}
+                          .map((allergy) => {
+                            // Determine label for "Annan" with notes
+                            let label = allergy.name;
+                            if (allergy.name.toLowerCase() === "annan" && customAllergyNote.trim()) {
+                              label = customAllergyNote.trim();
+                            }
+                            return (
+                              <button
+                                key={allergy.allergyId}
+                                onClick={() => toggleAllergy(allergy.allergyId)}
+                                disabled={togglingId === allergy.allergyId}
+                                className={cn(
+                                  "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-colors",
+                                  "bg-destructive/10 text-destructive border border-destructive/20 hover:bg-destructive/20",
+                                  togglingId === allergy.allergyId && "opacity-50"
+                                )}
+                              >
+                                {togglingId === allergy.allergyId ? (
+                                  <Loader2 className="h-3 w-3 animate-spin" />
+                                ) : (
+                                  <X className="h-3 w-3" />
+                                )}
+                                {label}
+                              </button>
+                            );
+                          })}
                       </div>
                     </div>
                   )}
