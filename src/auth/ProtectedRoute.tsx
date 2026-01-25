@@ -9,11 +9,11 @@ type Props = {
 };
 
 export function ProtectedRoute({ children, requireRole }: Props) {
-  const auth = useAuth() as any;
+  const auth = useAuth();
   const location = useLocation();
 
-  const token: string | null = auth?.accessToken ?? null;
-  const roles: string[] = auth?.roles ?? [];
+  const token = auth.accessToken;
+  const roles = auth.roles;
 
   // Not logged in -> redirect to login and remember where we came from
   if (!token) {

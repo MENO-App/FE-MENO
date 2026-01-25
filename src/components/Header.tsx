@@ -3,6 +3,7 @@ import {
   Bell,
   LayoutDashboard,
   CalendarDays,
+  User,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -134,6 +135,10 @@ export const Header = ({
               </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => navigate('/profile')} className="cursor-pointer gap-2">
+                <User className="h-4 w-4" />
+                My Profile
+              </DropdownMenuItem>
               <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">Logga ut</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
