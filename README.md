@@ -1,73 +1,155 @@
-# Welcome to your Lovable project
+# 🍽️ MENO – Frontend
 
-## Project info
+Frontend client for **MENO**, a modern school meal management application where students can:
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+- 📅 View the weekly menu  
+- 🥗 Filter meals based on allergies and dietary preferences  
+- 🍲 View detailed information about each dish  
+- 👤 Manage their profile  
+- ⚙️ (Admin) Create and manage dishes  
 
-## How can I edit this code?
+The application is built using **React + Vite** and communicates with a **.NET 8 Web API** following Clean Architecture principles.
 
-There are several ways of editing your application.
+---
 
-**Use Lovable**
+## 🚀 Project Status
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+- 🔧 Currently under active development  
+- 🌍 Deployment to Azure planned  
+- 🔁 CI/CD configured via GitHub Actions  
 
-Changes made via Lovable will be committed automatically to this repo.
+---
 
-**Use your preferred IDE**
+## 🛠 Tech Stack
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+| Technology | Purpose |
+|------------|----------|
+| React 18 | UI & component structure |
+| Vite | Fast development environment |
+| React Router | Client-side routing |
+| Fetch API | Communication with backend |
+| Environment Variables | API base URL configuration |
+| GitHub Actions | CI/CD pipeline |
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+---
 
-Follow these steps:
+## 📌 Features
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+- Display weekly menu  
+- Dynamic rendering of dishes  
+- Allergy-based filtering  
+- Dish details page  
+- Profile management  
+- CRUD functionality (Admin)  
+- Loading states  
+- Error handling  
+- Environment-based API configuration  
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+---
 
-# Step 3: Install the necessary dependencies.
-npm i
+## 📂 Project Structure
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+```bash
+src
+├── pages
+│   ├── HomePage.jsx
+│   ├── MenuPage.jsx
+│   ├── DishDetailsPage.jsx
+│   ├── ProfilePage.jsx
+│   └── AdminPage.jsx
+│
+├── components
+│   ├── Navbar.jsx
+│   ├── DishCard.jsx
+│   ├── AllergyChip.jsx
+│   └── Loader.jsx
+│
+├── services
+│   └── api.js
+│
+├── context
+│
+└── main.jsx
+```
+
+
+The structure follows **Separation of Concerns**:
+
+- Pages handle views  
+- Components are reusable UI elements  
+- Services handle API communication  
+- Context manages global state  
+
+---
+
+## ⚙️ Local Development
+
+### 1. Clone the repository
+
+```bash
+git clone <repository-url>
+cd meno-frontend
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Start development server
+
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+---
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 🏗 Production Build
 
-**Use GitHub Codespaces**
+```bash
+npm run build
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
 
-## What technologies are used for this project?
+---
 
-This project is built with:
+## 🔄 CI/CD
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+The project uses GitHub Actions to:
 
-## How can I deploy this project?
+- Install dependencies  
+- Build the project  
+- Run quality checks  
+- Prepare for deployment  
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+Deployment to Azure Static Web Apps is planned.
 
-## Can I connect a custom domain to my Lovable project?
+---
 
-Yes, you can!
+## 🎯 Architectural Principles
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+The frontend is designed according to the following principles:
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+- Single Responsibility Principle  
+- Modular component architecture  
+- Centralized API management  
+- Environment-based configuration  
+- Clear separation between UI and data layer  
+
+These principles ensure scalability, maintainability, and clean separation of concerns.
+
+---
+
+## 👥 Team
+
+This project is developed as part of a fullstack group assignment within a .NET System Developer program.
+
+### Roles
+
+- Backend Lead  
+- Frontend Lead  
+- DevOps / CI/CD Responsible  
+- Project Lead  
+
+
